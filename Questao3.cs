@@ -17,50 +17,22 @@ namespace TesteTecnico
             string json = File.ReadAllText("f:\\dados.json");
             List<FaturamentoDia> faturamento = JsonConvert.DeserializeObject<List<FaturamentoDia>>(json);
 
-            int qtdDias = 0;
-            double total = 0;
+            int qtdDias = faturamento.FindAll(x => x.Valor > 0).Count();
 
-            double maior = 0;
-            double menor = 0;
+            double maior = faturamento.FindAll(x => x.Valor > 0).Max(x => x.Valor);
 
-            foreach (var dia in faturamento)
-            {
-                if (dia.Valor > 0)
-                {
-                    qtdDias++;
-                    total += dia.Valor;
+            double menor = faturamento.FindAll(x => x.Valor > 0).Min(x => x.Valor);
 
-                    if (maior == 0 || menor == 0)
-                    {
-                        maior = dia.Valor;
-                        menor = dia.Valor;
-                    }
+            double total = faturamento.FindAll(x => x.Valor > 0).Sum(x => x.Valor);
 
-                    if (dia.Valor > maior)
-                    {
-                        maior = dia.Valor;
-                    }
-                    if (dia.Valor < menor)
-                    {
-                        menor = dia.Valor;
-
-                    }
-                }
-            }
             var dias = new List<int>();
             double media = total / qtdDias;
 
             Debug.WriteLine("Menor" + menor);
             Debug.WriteLine("Maior" + maior);
 
-            foreach (var dia in faturamento)
-            {
-                if (dia.Valor > media)
-                {
-                    dias.Add(dia.Dia);
-                }
+            faturamento.FindAll(x => x.Valor > media).Select(faturamento => faturamento.Dia).ToList().ForEach(x => dias.Add(x));
 
-            }
             Debug.WriteLine("Dias maior que a media:" + string.Join(",", dias));
         }
     }
